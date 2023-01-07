@@ -5,61 +5,85 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class BookRepository {
-
+   private  List<Book> bookList;
+   private int id ;
     public BookRepository(){
-        
+        this.bookList = new ArrayList<>();
+        this.id = 1;
     }
-        HashMap<Integer,Book> bookHashMap = new HashMap<>();
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public List<Book> getBookList() {
+        return bookList;
+    }
+
+    public void setBookList(List<Book> bookList) {
+        this.bookList = bookList;
+    }
 
     public Book save(Book book){
-            bookHashMap.put(book.getId(),book);
-        return book;
+        BookRepository bookRepository = new BookRepository();
+        book.setId(this.getId());
+            bookList.add(book);
+            setBookList(bookList);
+            this.setId(id++);
+            return book;
     }
 
     public Book findBookById(int id){
-        if(bookHashMap.containsKey(id)){
-            return bookHashMap.get(id);
+        for(Book book : bookList)
+        if(book.getId() == id){
+            return book;
         }
         return null;
     }
 
     public List<Book> findAll(){
-        return new ArrayList<>(bookHashMap.values());
+        return getBookList();
 
     }
 
     public void deleteBookById(int id){
-        if(bookHashMap.containsKey(id)){
-            bookHashMap.remove(id);
+        for(Book book : bookList)
+        if(book.getId() == id){
+            bookList.remove(book);
         }
 
         return;
     }
 
     public void deleteAll(){
-        bookHashMap.clear();
+        bookList.clear();
         return;
     }
 
     public List<Book> findBooksByAuthor(String author){
-        List<Book> bookList = new ArrayList<>();
-        for(Map.Entry<Integer,Book> m: bookHashMap.entrySet()){
-            if(m.getValue().getAuthor().equals(author)){
-                bookList.add(m.getValue());
+        List<Book> books = new ArrayList<>();
+        for(Book m: this.bookList){
+            if(m.getAuthor().equals(author)){
+                books.add(m);
             }
         }
 
-        return bookList;
+        return books;
     }
 
     public List<Book> findBooksByGenre(String genre){
-        List<Book> bookList = new ArrayList<>();
-        for(Map.Entry<Integer,Book> m: bookHashMap.entrySet()){
-            if(m.getValue().getGenre().equals(genre)){
-                bookList.add(m.getValue());
+
+        List<Book> books = new ArrayList<>();
+        for(Book m: this.bookList){
+            if(m.getGenre().equals(genre)){
+                books.add(m);
             }
         }
 
-        return bookList;
+        return books;
     }
 }
